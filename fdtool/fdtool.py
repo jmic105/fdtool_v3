@@ -24,9 +24,9 @@ __version__="0.1.7"
 
 import pandas as pd
 import sys, time, argparse, ntpath, pickle, csv
-from modules import *
-from string import ascii_lowercase
-from config import MAX_K_LEVEL
+from .modules import *
+from string import ascii_letters, ascii_lowercase
+from .config import MAX_K_LEVEL
 
 def main():
 
@@ -34,7 +34,7 @@ def main():
     filePath = sys.argv[1]
 
     # Print reading file
-    print "\n" + "Reading file: \n" + str(filePath) + "\n"; sys.stdout.flush();
+    print ("\n" + "Reading file: \n" + str(filePath) + "\n"); sys.stdout.flush();
     # Define file extension from path
     fileExtension = ntpath.basename(filePath).split('.')[-1]
 
@@ -45,8 +45,8 @@ def main():
             # Detect delimiter
             sniffer = csv.Sniffer()
             sniffer.preferred=[',','|',';',':','~']            
-            csvFile=open(filePath, 'rb')
-            for row in csv.reader(csvFile,delimiter="\t"):
+            csvFile = open(filePath, 'r', encoding='utf-8')
+            for row in csv.reader(csvFile, delimiter="\t"):
                 row1=row
                 break;
             csvFile.close()
@@ -54,18 +54,18 @@ def main():
             sepType = dialect.delimiter
 
             if sepType not in {",", "|", ";", ":", "~"}:
-                print "Invalid delimiter"
+                print ("Invalid delimiter")
                 sys.stdout.flush()
                 return;
 
             # Read in pandas data frame from csv file
             df = pd.read_csv(filePath, sep = sepType);
         except pd.parser.CParserError:
-            print "Invalid file"
+            print ("Invalid file")
             sys.stdout.flush()
             return;
         except IOError:
-            print "File not found"
+            print ("File not found")
             sys.stdout.flush()
             return;
     else:
@@ -73,7 +73,7 @@ def main():
             # Read in pandas data fram pkl file
             df = pd.read_pickle(filePath);
         except IOError:
-            print "File not found"
+            print ("File not found")
             sys.stdout.flush()
             return;
 
@@ -95,9 +95,9 @@ def main():
     
     try:
         # Create dictionary to convert column names into alphabetical characters
-        Alpha_Dict = {U[i]: ascii_lowercase.upper()[i] for i in range(len(U))}
+        Alpha_Dict = {U[i]: letters[i] for i in list(range(len(U)))}
     except IndexError:
-        print "Table exceeds max column count"
+        print ("Table exceeds max column count")
         sys.stdout.flush()
         return;
     
@@ -156,7 +156,7 @@ def main():
 
     # Print equivalences
     file.write("\n" + "Equivalences: " + "\n")
-    print "\n" + "Equivalences: "; sys.stdout.flush();
+    print ("\n" + "Equivalences: "); sys.stdout.flush();
     # Iterate through equivalences returned
     for Equivalence in E_Set:
         # Create string for functional dependency
@@ -168,7 +168,7 @@ def main():
 
     # Print out keys 
     file.write("\n" + "Keys: " + "\n")
-    print "\n" + "Keys: "; sys.stdout.flush();
+    print ("\n" + "Keys: "); sys.stdout.flush();
     # Get string of column names sorted to alphabetical characters
     SortedAlphaString = "".join(sorted([Alpha_Dict[item] for item in Alpha_Dict]))
     # Run required inputs through keyList module to determine keys with
@@ -178,7 +178,7 @@ def main():
         # Write keys to file
         file.write(str(key) + "\n")
         # Print keys
-        print str(key); sys.stdout.flush();
+        print(str(key)); sys.stdout.flush();
     
     # Create string to give user info of script
     checkInfoString = str("\n" + "Time (s): " + str(round(time.time() - start_time, 4)) + "\n"
