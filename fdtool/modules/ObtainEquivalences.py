@@ -8,13 +8,13 @@
 #           E = E *Union* { X <-> Y}    \\by Theorem 3
 # return (E);
 
-import binaryRepr
+from . import binaryRepr
 
 def f(C_km1, F, Closure, U):
 
     # Set E to null list
     E = []
-    
+
     # Iterate through candidates in C_km1
     for X in C_km1:
         # Iterate through functional dependences Y -> v_i in F
